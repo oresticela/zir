@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZirApp</title>
+    <link rel="stylesheet" href="../static/home.css">
+    <script src="https://www.paypal.com/sdk/js?client-id=AdImIegHRa7yuJ78wPccSqc7o5JveUR2fKI5eoQPITbmc0WtzrI3X0A8grgHNTCfIa5id4abBWiaAZsv&currency=USD"></script>
+</head>
+<body>
+    {% if users.find_one({"email": session['email']})['group'] != "0" %}
+    <div class="navbar">
+        <a href="#home" class="logo">ZirApp</a>
+        <div class="nav-links">
+            <span>Group code: {{ group['code'] }}</span>
+            <a href="{{ url_for('delete_group') }}">Delete Group</a>
+            <a href="{{ url_for('logout') }}">Log Out</a>
+        </div>
+    </div>
+    <div class="content">
+        <div class="online-users" style="max-width: 25%;">
+            <h2>Group Details</h2>
+            <hr>
+            <h3>Group Name: {{ group['name'] }}</h3>
+            {% if group['description'] != "" %}
+            <p><b>Group Description: <br></b>{{ group['description'] }}</p>
+            {% endif %}
+            <h3>Invitation Code:<br><span style="font-weight: normal;">{{ group['code'] }}</span></h3>
+            <ul style="text-align: center; margin:auto;">
+            <h3>Group Members:</h3>
+            {% for x in users.find() %}
+            {% if x['group'] == group['code'] %}
+            <li><h4>{{ x['name'] }}</h4></li>
+            {% endif %}
+            {% endfor %}
+
+            </ul>
+        </div>
+        <div class="investing">
+            <h2>Music</h2>
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/3O7JbDL7rJi0qlyHKJ82oh?utm_source=generator&theme=0" width="100%" height="100%" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+        <div class="notes-todo-container">
+            <div class="notes">
+                <h2>Notes</h2>
+                    {% if notes %}
+                    <ul>
+                        {% for note in notes %}
+                            <li class="note">
+                                {{ note }}
+                                <form action="{{ url_for('delete_note') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="note" value="{{ note }}">
+                                    <button type="submit" class="delete-button">Delete</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+        {% else %}
+            <p>No notes found.</p>
+        {% endif %}
+                <form method="POST" action="/home">
+                <div class="note-input-container" id="noteInputContainer">
+                    <input type="text" class="note-input" name="note" placeholder="Enter your note here...">
+                    <input class="submit-note-button" type="submit" value="Add">
+                </div>
+                </form>
+            </div>
+            <div class="todo-list">
+                <h2>To-Do List</h2>
+                {% if todos %}
+                    <ul>
+                        {% for todo in todos %}
+                            <li class="note">
+                                {{ todo }}
+                                <form action="{{ url_for('delete_todo') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="todo" value="{{ todo }}">
+                                    <button type="submit" class="delete-button">Delete</button>
+                                </form>
+                                <form action="{{ url_for('todo_done') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="todo" value="{{ todo }}">
+                                    <button type="submit" class="delete-button">Done</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <form method="POST" action="/home">
+                    <div class="note-input-container" id="noteInputContainer">
+                        <input type="text" class="note-input" name="todo" placeholder="Enter your task here...">
+                        <input class="submit-note-button" type="submit" value="Add">
+                    </div>
+                    </form>
+                    <hr>
+                    <h2>To-Dos Done</h2>
+                    {% if todos_done %}
+                    <ul>
+                        {% for todo_done in todos_done %}
+                            <li class="note">
+                                {{ todo_done }}
+                                <form action="{{ url_for('todo_done_delete') }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="todo_done" value="{{ todo_done }}">
+                                    <button type="submit" class="delete-button">Delete</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+            <p>No done tasks found.</p>
+        {% endif %}
+            </div>
+        </div>
+        <div class="chat" id="chat" style="max-width: 30%; overflow-y:scroll;word-wrap: break-word">
+            <h2>Chat</h2>
+            
+            {% for x in chat.find() %}
+            {% if x['group'] == user['group'] %}
+            <p><b>{{x['sender']}}:</b> {{x['message']}}</p>
+            {% endif %}
+            {% endfor %}
+            
+            <form method="POST" action="{{url_for('send_message')}}">
+                <div class="note-input-container" id="noteInputContainer">
+                    <input type="text" class="note-input" name="message" placeholder="Enter your message here...">
+                    <input class="submit-note-button" type="submit" value="Send">
+                </div>
+            </form>
+        </div>
+        <script>
+            // Function to scroll to the bottom of the container
+            function scrollToBottom() {
+                var messageContainer = document.getElementById('chat');
+                messageContainer.scrollTop = messageContainer.scrollHeight;
+            }
+        
+            // Call the function after the page has fully loaded
+            window.onload = function() {
+                scrollToBottom(); // Scroll to the bottom initially
+            };
+        </script>
+    </div>
+    {% else %}
+    <div class="navbar">
+        <a href="#home" class="logo">ZirApp</a>
+        <div class="nav-links">
+            <a href="{{ url_for('logout') }}">Log Out</a>
+        </div>
+    </div>
+    <div class="content">
+        <div class="group-container">
+            <!-- Join Group Section -->
+            <div class="group-section" id="join-group">
+                <h2>Join Group</h2>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+                <form method="POST" action="{{ url_for('join_group') }}">
+                    <div class="form-group">
+                        <label for="group-code">Group Code</label>
+                        <input type="text" id="group-code" name="group_code" placeholder="Enter Group Code" required>
+                    </div>
+                    <button type="submit" class="submit-button">Join Group</button>
+                </form>
+            </div>
+
+            <!-- Create Group Section -->
+            <div class="group-section" id="create-group">
+                <h2>Create Group {% if user['account'] == "leader"%} (Cost: <s>$9.98</s> FREE) {% else %} (Cost: $9.98) {% endif %}</h2>
+                <form method="POST" action="{{ url_for('create_group') }}">
+                    <div class="form-group">
+                        <label for="group-name">Group Name</label>
+                        <input type="text" id="group-name" name="group_name" placeholder="Enter Group Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="group-description">Group Description</label>
+                        <input id="group-description" name="group_description" placeholder="Enter Group Description"></textarea>
+                    </div>
+                    {% if user['account'] == "leader" %}
+                    <button type="submit" class="submit-button">Create Group</button>
+                    {% else %}
+                    <div id="paypal-button-container" style="margin-top: 20px; overflow-y: auto; max-height:500px;;"></div>
+                    <script>
+                        paypal.Buttons({
+                            createOrder: function(data, actions) {
+                                return actions.order.create({
+                                    purchase_units: [{
+                                        amount: {
+                                            value: '9.98' // Cost of the Leader Account plan
+                                        }
+                                    }]
+                                });
+                            },
+                            onApprove: function(data, actions) {
+                                return actions.order.capture().then(function(details) {
+                                    // Send a POST request to Flask to handle the transaction
+                                    fetch('{{url_for("create_group")}}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            orderID: data.orderID,
+                                            payerID: details.payer.payer_id
+                                        })
+                                    }).then(response => {
+                                        // Redirect to the signup page for Leader account
+                                        window.location.href = "{{url_for('create_group')}}";
+                                    }).catch(error => {
+                                        console.error('Error:', error);
+                                    });
+                                });
+                            }
+                        }).render('#paypal-button-container'); // Render the PayPal button into the container
+                    </script>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <style>
+    /* General styles */
+/* General styles */
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background: linear-gradient(135deg, #ff00a9, #540d6e);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.7);
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+.navbar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: pink;
+    text-decoration: none;
+}
+
+.navbar .nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar .nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: large;
+}
+
+.navbar .nav-links a:hover {
+    color: pink;
+}
+
+.content {
+    max-width: 100%;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 60px; /* Offset for fixed navbar */
+}
+
+/* Group Sections Container */
+.group-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+/* Group Sections */
+.group-section {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    margin-bottom: 20px;
+    flex: 1; /* Added flex-grow for responsive width */
+}
+
+.group-section h2 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 80%;
+    margin: auto;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.submit-button {
+    background-color: #540d6e;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.submit-button:hover {
+    background-color: #ff00a9;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 1200px) {
+    .group-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar .nav-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .content {
+        padding: 10px;
+    }
+
+    .group-section {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .submit-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar .logo {
+        font-size: 18px;
+    }
+
+    .navbar .nav-links a {
+        font-size: medium;
+    }
+
+    .group-section {
+        padding: 15px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .submit-button {
+        font-size: 14px;
+    }
+
+    .submit-button {
+        padding: 8px 16px;
+    }
+}
+
+/* General styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff00a9, #540d6e);
+    color: white;
+    height: 100vh;
+    overflow: hidden; /* Prevents scrolling */
+}
+
+/* Navbar styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.2); /* Semi-transparent black */
+    top: 0;
+    width: 100%;
+    z-index: 1; /* Ensures navbar stays on top */
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.navbar .logo {
+    font-size: 24px;
+}
+
+/* Online Users styles */
+.online-users {
+    position: fixed;
+    top: 60px; /* Adjusts to be just below the navbar */
+    left: 20px;
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    text-align: center;
+}
+
+.online-users h2 {
+    margin: 0;
+}
+
+/* Announcements styles */
+.announcements {
+    position: fixed;
+    top: 160px; /* Positioned just below the Online Users section */
+    left: 20px;
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    text-align: center;
+}
+
+.announcements h2 {
+    margin: 0;
+}
+
+iframe{
+    max-height: 30%;
+    overflow-y: scroll;
+}
+
+/* Investing styles */
+.investing {
+    position: fixed;
+    top: 60px; /* Adjusts to be just below the navbar */
+    right: 20px;
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    max-height:25%;
+    text-align: center;
+}
+
+.investing h2 {
+    margin: 0;
+}
+
+/* Container for Notes, To-Do List, and Music */
+.notes-todo-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    gap: 20px; /* Space between Notes, To-Do List, and Music */
+}
+
+/* Notes, To-Do List, and Music styles */
+.notes, .todo-list, .music {
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    text-align: center;
+    width:300px;
+}
+
+.notes h2, .todo-list h2, .music h2 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Specific styles for the Spotify logo */
+.spotify-logo {
+    width: 24px; /* Adjust size as needed */
+    height: 24px; /* Adjust size as needed */
+    margin-left: 10px; /* Space between text and logo */
+}
+
+/* Chat styles */
+.chat {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    text-align: center;
+}
+
+.chat h2 {
+    margin: 0;
+}
+
+/* Add Note button */
+.add-note-button {
+    background-color: #fff;
+    color: #540d6e;
+    border: 2px solid #540d6e;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.add-note-button:hover {
+    background-color: #540d6e;
+    color: #fff;
+}
+
+/* Note input and Add button */
+.note-input-container {
+    display: none; /* Hidden by default */
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.note-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.submit-note-button {
+    background-color: #540d6e;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.submit-note-button:hover {
+    background-color: #ff00a9;
+}
+
+.submit-note-button,
+.delete-button {
+    background-color: #540d6e;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.chat{
+    max-height:300px;
+    overflow-x: auto;
+}
+
+.submit-note-button:hover,
+.delete-button:hover {
+    background-color: #ff00a9;
+}
+
+/* Delete button */
+.delete-button {
+    margin-left: 10px;
+}
+
+
+
+.notes {
+    max-width: 50%;
+    margin: auto; /* Center the notes container */
+}
+
+.note-input-container {
+    margin-top: 10px; /* Adjust as needed */
+}
+
+
+    </style>
+</body>
+</html>

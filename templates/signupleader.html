@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup - ZirApp</title>
+    <script src="https://www.paypal.com/sdk/js?client-id=AdImIegHRa7yuJ78wPccSqc7o5JveUR2fKI5eoQPITbmc0WtzrI3X0A8grgHNTCfIa5id4abBWiaAZsv&currency=USD"></script>
+
+</head>
+<body>
+    <div class="signup-container">
+        <h2>Signup to ZirApp</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+        <form class="signup-form" action="/signupleader" method="POST">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                Agree to our <a href="#" style="color:purple">Terms and Conditions</a><input type="checkbox" id="agree" name="agree" required>
+            </div>
+            <button type="submit" class="signup-button">Continue</button>
+        </form>
+    </div>
+</body>
+</html>
+
+<style>    
+    /* General styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff00a9, #540d6e);
+    color: white;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* signup container styles */
+.signup-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: black;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Form group styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* signup button styles */
+.signup-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #540d6e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.signup-button:hover {
+    background-color: #ff00a9;
+}
+
+</style>

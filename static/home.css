@@ -1,0 +1,218 @@
+/* General styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff00a9, #540d6e);
+    color: white;
+    height: 100vh;
+    overflow: hidden; /* Prevents scrolling */
+}
+
+/* Navbar styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.2); /* Semi-transparent black */
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1; /* Ensures navbar stays on top */
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.navbar .logo {
+    font-size: 24px;
+}
+
+/* Online Users styles */
+.online-users {
+    position: fixed;
+    top: 60px; /* Adjusts to be just below the navbar */
+    left: 20px;
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    text-align: center;
+}
+
+.online-users h2 {
+    margin: 0;
+}
+
+/* Announcements styles */
+.announcements {
+    position: fixed;
+    top: 160px; /* Positioned just below the Online Users section */
+    left: 20px;
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    text-align: center;
+}
+
+.announcements h2 {
+    margin: 0;
+}
+
+/* Investing styles */
+.investing {
+    position: fixed;
+    top: 60px; /* Adjusts to be just below the navbar */
+    right: 20px;
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    text-align: center;
+}
+
+.investing h2 {
+    margin: 0;
+}
+
+/* Container for Notes, To-Do List, and Music */
+.notes-todo-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    gap: 20px; /* Space between Notes, To-Do List, and Music */
+}
+
+/* Notes, To-Do List, and Music styles */
+.notes, .todo-list, .music {
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    text-align: center;
+    width:300px;
+}
+
+.notes h2, .todo-list h2, .music h2 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Specific styles for the Spotify logo */
+.spotify-logo {
+    width: 24px; /* Adjust size as needed */
+    height: 24px; /* Adjust size as needed */
+    margin-left: 10px; /* Space between text and logo */
+}
+
+/* Chat styles */
+.chat {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    text-align: center;
+}
+
+.chat h2 {
+    margin: 0;
+}
+
+/* Add Note button */
+.add-note-button {
+    background-color: #fff;
+    color: #540d6e;
+    border: 2px solid #540d6e;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.add-note-button:hover {
+    background-color: #540d6e;
+    color: #fff;
+}
+
+/* Note input and Add button */
+.note-input-container {
+    display: none; /* Hidden by default */
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.note-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.submit-note-button {
+    background-color: #540d6e;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.submit-note-button:hover {
+    background-color: #ff00a9;
+}
+
+.submit-note-button,
+.delete-button {
+    background-color: #540d6e;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.submit-note-button:hover,
+.delete-button:hover {
+    background-color: #ff00a9;
+}
+
+/* Delete button */
+.delete-button {
+    margin-left: 10px;
+}
+
+
+
+.notes {
+    max-width: 50%;
+    margin: auto; /* Center the notes container */
+}
+
+.note-input-container {
+    margin-top: 10px; /* Adjust as needed */
+}
