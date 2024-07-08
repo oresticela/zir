@@ -111,13 +111,13 @@
         </div>
         <div class="chat" id="chat" style="max-width: 30%; overflow-y:scroll;word-wrap: break-word">
             <h2>Chat</h2>
-            
+
             {% for x in chat.find() %}
             {% if x['group'] == user['group'] %}
             <p><b>{{x['sender']}}:</b> {{x['message']}}</p>
             {% endif %}
             {% endfor %}
-            
+
             <form method="POST" action="{{url_for('send_message')}}">
                 <div class="note-input-container" id="noteInputContainer">
                     <input type="text" class="note-input" name="message" placeholder="Enter your message here...">
@@ -131,7 +131,7 @@
                 var messageContainer = document.getElementById('chat');
                 messageContainer.scrollTop = messageContainer.scrollHeight;
             }
-        
+
             // Call the function after the page has fully loaded
             window.onload = function() {
                 scrollToBottom(); // Scroll to the bottom initially

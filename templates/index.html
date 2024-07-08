@@ -457,8 +457,6 @@
         <div class="left-section">
             <div class="logo">ZirApp</div>
             <div class="nav-links">
-                <a href="#plans">Pricing</a>
-                <a href="#demo">Demo</a>
                 <a href="#faq">FAQ</a>
                 <a href="#support">Support</a> <!-- Added ID for support link -->
             </div>
@@ -498,81 +496,15 @@
             </div>
         </div>
 
-        <div class="plans" id="plans">
-            <div class="plan basic-plan">
-                <h2>Basic Account</h2>
-                <p class="price"><s>$3.99</s><br>Free (only for the first week of launching)</p>
-                <ul>
-                    <li>Creating new groups at $9.98/group</li>
-                    <li>Join 1 group free<br>(Others priced at $4.98 per group)</li>
-                    <li>Be part of only one group at a time</li>
-                    <li>24/7 support</li>
-                    <li>Unlimited Notes</li>
-                    <li>No Storage<br></li>
-                </ul>
-                <p style="font-size: medium;"><u><i>Pay once, access forever</i></u></p>
-                <br><br>
-                <a href="{{url_for('signup')}}"><button class="plan-button">Get Started</button></a>
-            </div>
-            <div class="plan premium-plan">
-                <h2>Leader Account</h2>
-                <p class="price">$19.99</p>
-                <ul>
-                    <li>Create 1 group at no cost</li>
-                    <li>Join <b><i>2 groups</i></b> free<br>(Others priced at <b><i>$0.99</i></b> per group)</li>
-                    <li>Be part of only one group at a time</li>
-                    <li>24/7 support</li>
-                    <li>Unlimited Notes</li>
-                    <li><i><b>1 GB</b> personal storage</i></li>
-                </ul>
-                <p style="font-size: medium;"><u><i>Pay once, access forever</i></u></p>
-                <br><br>
-                <div id="paypal-button-container" style="margin-top: 20px;"></div>
-            </div>
-        </div>
 
-        <script>
-            paypal.Buttons({
-                createOrder: function(data, actions) {
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                value: '19.99' // Cost of the Leader Account plan
-                            }
-                        }]
-                    });
-                },
-                onApprove: function(data, actions) {
-                    return actions.order.capture().then(function(details) {
-                        // Send a POST request to Flask to handle the transaction
-                        fetch('{{url_for("signupleader")}}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                orderID: data.orderID,
-                                payerID: details.payer.payer_id
-                            })
-                        }).then(response => {
-                            // Redirect to the signup page for Leader account
-                            window.location.href = "/signupleader";
-                        }).catch(error => {
-                            console.error('Error:', error);
-                        });
-                    });
-                }
-            }).render('#paypal-button-container'); // Render the PayPal button into the container
-        </script>
-        
 
-        <!-- Video Demo Section -->
+<!--         Video Demo Section
         <div class="video-demo-section" id="demo">
             <h2>Watch the ZirApp Demo</h2>
             <p>Get a quick overview of how ZirApp can transform your teamwork experience. Watch the demo to see our features in action!</p>
             <iframe src="https://www.youtube.com/embed/your-video-id" allowfullscreen></iframe>
         </div>
-
+    -->
         <!-- FAQ Section -->
         <div class="faq-section" id="faq">
             <h2>Frequently Asked Questions</h2>
@@ -585,19 +517,19 @@
             <div class="faq" onclick="toggleFaq(this)">
                 <h3>How does ZirApp help in improving productivity?</h3>
                 <div class="faq-answer">
-                    <p>ZirApp motivates users through a leveling system based on tasks and to-do lists, encouraging consistent effort and participation in a fun, engaging manner.</p>
+                    <p>ZirApp motivates users through tasks and to-do lists, encouraging consistent effort and participation in a fun, engaging manner.</p>
                 </div>
             </div>
             <div class="faq" onclick="toggleFaq(this)">
-                <h3>What are the different types of accounts available?</h3>
+                <h3>Is ZirApp free?</h3>
                 <div class="faq-answer">
-                    <p>ZirApp offers a Basic Account and a Leader Account, each providing different features and levels of access to group creation, joining groups, and personal storage.</p>
+                    <p>ZirApp is <b>COMPLETELY</b> free. We believe in making teamworking easy for anyone</p>
                 </div>
             </div>
             <div class="faq" onclick="toggleFaq(this)">
-                <h3>Can I get a refund?</h3>
+                <h3>Can I be part of more than one group at a time?</h3>
                 <div class="faq-answer">
-                    <p>ZirApp offers 100% refunds within the first hour of purchase, 80% refund within the first 12 hours of purchase and a 50% refund within the first week of purchase. After a week of purchase refunds will be available only at 10% of the value spent on the account.</p>
+                    <p>Unfortunately, ZirApp users can be part of only one group at a time. This is something temporary and we're looking forward to allow our users to be part of many groups at a time</p>
                 </div>
             </div>
         </div>
